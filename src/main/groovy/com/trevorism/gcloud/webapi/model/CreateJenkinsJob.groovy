@@ -13,7 +13,7 @@ class CreateJenkinsJob {
     @ApiModelProperty(value = "The git repository name", dataType = "string")
     String gitRepoName
 
-    @ApiModelProperty(value = "The gradle tasks to run", dataType = "List")
+    @ApiModelProperty(value = "The gradle tasks to run", example = '["clean","build","publishSnapshot"]')
     List<String> gradleTasks
 
 }

@@ -26,7 +26,7 @@ import javax.ws.rs.core.MediaType
  * @author tbrooks
  */
 @Api("Jenkins Operations")
-@Path("/jobs")
+@Path("/job")
 class JenkinsController {
 
     private JenkinsService jenkinsService = new DefaultJenkinsService()
