@@ -52,11 +52,12 @@ dependencies {
     compile 'io.swagger:swagger-jersey2-jaxrs:1.5.19'
 
     compile 'com.trevorism:secure-utils:1.0.1'
+    compile 'com.trevorism:http-utils:1.0.1'
+    compile 'com.google.code.gson:gson:2.8.5'
     //compile 'com.trevorism:datastore-client:1.2.0'
     //compile 'com.trevorism:eventhub-client:1.4.0'
 
     acceptanceCompile 'info.cukes:cucumber-groovy:1.2.5'
-    acceptanceCompile 'com.trevorism:http-utils:1.0.1'
     acceptanceCompile 'org.apache.httpcomponents:httpclient:4.5.5'
 
     testCompile 'junit:junit:4.12'

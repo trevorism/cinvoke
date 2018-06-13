@@ -1,6 +1,9 @@
 package com.trevorism.gcloud.webapi.controller
 
+import com.trevorism.gcloud.webapi.model.CreateJenkinsJob
 import com.trevorism.gcloud.webapi.model.JenkinsJob
+import com.trevorism.gcloud.webapi.service.DefaultJenkinsService
+import com.trevorism.gcloud.webapi.service.JenkinsService
 import com.trevorism.secure.Secure
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -21,20 +24,22 @@ import javax.ws.rs.core.MediaType
 @Path("/jobs")
 class JenkinsController {
 
+    private JenkinsService jenkinsService = new DefaultJenkinsService()
+
     @ApiOperation(value = "Create a new jenkins job **Secure")
     @POST
     @Secure
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    boolean createJob(JenkinsJob job){
-        return false
+    boolean createJob(CreateJenkinsJob job){
+        jenkinsService.create(job)
     }
 
     @ApiOperation(value = "Get a list of all jenkins jobs")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     List<JenkinsJob> listAllJobs(){
-        return []
+        jenkinsService.list()
     }
 
     @ApiOperation(value = "Get a specific job")
@@ -42,7 +47,7 @@ class JenkinsController {
     @Path("{job}")
     @Produces(MediaType.APPLICATION_JSON)
     JenkinsJob getJob(@PathParam("job") String jobName){
-        return null
+        new JenkinsJob(name: jenkinsService.get(jobName))
     }
 
     @ApiOperation(value = "Delete a job **Secure")
@@ -50,17 +55,16 @@ class JenkinsController {
     @Secure
     @Consumes(MediaType.APPLICATION_JSON)
     boolean deleteJob(JenkinsJob job){
-        return false
+        jenkinsService.delete(job.name)
     }
 
     @ApiOperation(value = "Invoke a job **Secure")
     @POST
     @Secure
-    @Path("{job}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{job}/build")
     @Produces(MediaType.APPLICATION_JSON)
-    boolean invokeJob(@PathParam("job") String jobName, JenkinsJob job){
-        return false
+    boolean invokeJob(@PathParam("job") String jobName){
+        jenkinsService.invoke(jobName)
     }
 
 }

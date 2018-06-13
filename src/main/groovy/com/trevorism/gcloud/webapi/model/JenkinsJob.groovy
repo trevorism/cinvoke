@@ -7,10 +7,13 @@ import io.swagger.annotations.ApiModelProperty
  */
 class JenkinsJob {
 
+    static JenkinsJob NULL_OBJECT = new JenkinsJob()
+
     @ApiModelProperty(value = "The jenkins job name", dataType = "string")
-    String jobName
-    @ApiModelProperty(value = "The git repository name, usually mateches the job name", dataType = "string")
-    String repoName
-    @ApiModelProperty(value = "The gradle tasks to run")
-    List<String> gradleTasks = []
+    String name
+
+    @Override
+    String toString() {
+        return name
+    }
 }
