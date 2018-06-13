@@ -62,9 +62,10 @@ class JenkinsController {
     @ApiOperation(value = "Delete a job **Secure")
     @DELETE
     @Secure
+    @Path("{job}")
     @Consumes(MediaType.APPLICATION_JSON)
-    boolean deleteJob(@Context HttpHeaders headers, JenkinsJob job){
-        boolean result = jenkinsService.delete(job.name)
+    boolean deleteJob(@Context HttpHeaders headers, @PathParam("job") String jobName){
+        boolean result = jenkinsService.delete(jobName)
         String correlationId = headers?.getHeaderString(HeadersHttpClient.CORRELATION_ID_HEADER_KEY)
         eventProducer.sendEvent(new WorkComplete("trevorism-gcloud", "cinvoke", correlationId))
         return result
