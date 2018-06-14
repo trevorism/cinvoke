@@ -73,7 +73,5 @@ Then(~/^the create request returns false, indicating failure$/) { ->
 }
 
 Then(~/^the delete request returns false, indicating failure$/) { ->
-    //Should be this
-    //assert !deleteResult
-    assert deleteResult
+    assert !deleteResult
 }
