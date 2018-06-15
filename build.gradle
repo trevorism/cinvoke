@@ -66,6 +66,18 @@ dependencies {
     testCompile "com.google.appengine:appengine-tools-sdk:$appengineVersion"
 }
 
+processResources{
+    doLast{
+        println System.getProperty("user.home")
+        copy{
+            from "${System.getProperty("user.home")}/${project.name}/secrets.properties"
+            into "build/resources/main"
+        }
+    }
+}
+
+
+
 acceptance {
     stepDefinitionRoots = ['src/acceptance/groovy/com/trevorism/gcloud']
     finalizedBy("sendAcceptanceTestEvents")
