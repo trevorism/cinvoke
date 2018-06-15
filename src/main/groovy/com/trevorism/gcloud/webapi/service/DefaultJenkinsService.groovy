@@ -17,7 +17,9 @@ import org.apache.http.client.methods.CloseableHttpResponse
  */
 class DefaultJenkinsService implements JenkinsService {
 
-    private final HeadersHttpClient client = new HeadersJsonHttpClient()
+    private HeadersHttpClient client = new HeadersJsonHttpClient()
+    private HeadersHttpClientBase xmlClient = createTextXmlHttpClient()
+
     private final Gson gson = new Gson()
     private final Properties properties
     private String jenkinsUrl
@@ -65,8 +67,7 @@ class DefaultJenkinsService implements JenkinsService {
         job = validateJob(job)
         String updatedXml = updateXmlTemplate(job)
 
-        HeadersHttpClientBase client = createTextXmlHttpClient()
-        CloseableHttpResponse response = client.post("${jenkinsUrl}/createItem?name=${job.name}", updatedXml, createHeaders(crumb))
+        CloseableHttpResponse response = xmlClient.post("${jenkinsUrl}/createItem?name=${job.name}", updatedXml, createHeaders(crumb))
 
         int statusCode = response.statusLine.statusCode
         ResponseUtils.closeSilently response
