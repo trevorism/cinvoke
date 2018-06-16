@@ -10,7 +10,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.3.4'
-        classpath 'com.trevorism:gradle-acceptance-plugin:1.3.0'
+        classpath 'com.trevorism:gradle-acceptance-plugin:1.3.4'
         classpath 'com.trevorism:gradle-gae-deploy-plugin:1.1.1'
         classpath 'com.trevorism:gradle-release-plugin:0.3.0'
     }
