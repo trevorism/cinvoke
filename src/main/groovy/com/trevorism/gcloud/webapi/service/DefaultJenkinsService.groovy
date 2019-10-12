@@ -29,7 +29,7 @@ class DefaultJenkinsService implements JenkinsService {
 
     DefaultJenkinsService() {
         properties = new Properties()
-        properties.load(DefaultJenkinsService.class.getClassLoader().getResourceAsStream("secrets.properties"))
+        properties.load(DefaultJenkinsService.class.getClassLoader().getResourceAsStream("secrets.properties") as InputStream)
 
         jenkinsUrl = properties.getProperty("url")
         username = properties.getProperty("username")
