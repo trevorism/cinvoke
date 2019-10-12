@@ -15,6 +15,7 @@ import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
 import javax.ws.rs.GET
 import javax.ws.rs.POST
+import javax.ws.rs.PUT
 import javax.ws.rs.Path
 import javax.ws.rs.PathParam
 import javax.ws.rs.Produces
@@ -43,6 +44,20 @@ class JenkinsController {
         eventProducer.sendEvent(new WorkComplete("trevorism-gcloud", "cinvoke", correlationId))
         return result
     }
+
+    @ApiOperation(value = "Updates a jenkins job **Secure")
+    @PUT
+    @Secure
+    @Path("{job}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    boolean updateJob(@Context HttpHeaders headers, @PathParam("job") String jobName, List<String> tasks){
+        boolean result = jenkinsService.update(jobName, tasks)
+        String correlationId = headers?.getHeaderString(HeadersHttpClient.CORRELATION_ID_HEADER_KEY)
+        eventProducer.sendEvent(new WorkComplete("trevorism-gcloud", "cinvoke", correlationId))
+        return result
+    }
+
 
     @ApiOperation(value = "Get a list of all jenkins jobs")
     @GET

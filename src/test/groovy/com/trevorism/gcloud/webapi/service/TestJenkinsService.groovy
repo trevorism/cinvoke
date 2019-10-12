@@ -18,6 +18,11 @@ class TestJenkinsService implements JenkinsService{
     }
 
     @Override
+    boolean update(String jobName, List<String> tasks) {
+        return jobName
+    }
+
+    @Override
     boolean delete(String jobName) {
         return jobName
     }

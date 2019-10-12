@@ -55,6 +55,20 @@ class DefaultJenkinsService implements JenkinsService {
     }
 
     @Override
+    boolean update(String jobName, List<String> tasks) {
+        CreateJenkinsJob createJenkinsJob = createUpdateObject(jobName, tasks)
+        return xmlPost(createJenkinsJob, "${jenkinsUrl}/job/${jobName}/config.xml")
+    }
+
+    private CreateJenkinsJob createUpdateObject(String jobName, List<String> tasks) {
+        CreateJenkinsJob createJenkinsJob = new CreateJenkinsJob()
+        createJenkinsJob.name = jobName
+        createJenkinsJob.gitRepoName = jobName
+        createJenkinsJob.gradleTasks = tasks
+        createJenkinsJob
+    }
+
+    @Override
     boolean delete(String jobName) {
         CloseableHttpResponse response = client.post("${jenkinsUrl}/job/${jobName}/doDelete", "{}", createHeaders(crumb))
         int statusCode = response.statusLine.statusCode
@@ -64,11 +78,13 @@ class DefaultJenkinsService implements JenkinsService {
 
     @Override
     boolean create(CreateJenkinsJob job) {
+        xmlPost(job, "${jenkinsUrl}/createItem?name=${job.name}")
+    }
+
+    private boolean xmlPost(CreateJenkinsJob job, String url){
         job = validateJob(job)
         String updatedXml = updateXmlTemplate(job)
-
-        CloseableHttpResponse response = xmlClient.post("${jenkinsUrl}/createItem?name=${job.name}", updatedXml, createHeaders(crumb))
-
+        CloseableHttpResponse response = xmlClient.post(url, updatedXml, createHeaders(crumb))
         int statusCode = response.statusLine.statusCode
         ResponseUtils.closeSilently response
         return statusCode == 200

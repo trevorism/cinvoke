@@ -52,6 +52,13 @@ class DefaultJenkinsServiceTest {
     }
 
     @Test
+    void testUpdate() {
+        service.client = [get:{url, headers -> createCloseableHttpResponse("{}")}] as HeadersHttpClient
+        service.xmlClient = [post: {url, json, headers -> createCloseableHttpResponse("{}")}] as HeadersHttpClientBase
+        assert service.update("unitTest", ["clean", "build"])
+    }
+
+    @Test
     void testInvoke() {
         service.client = [get:{url, headers -> createCloseableHttpResponse("{}")}, post: {url, json, headers -> createCloseableHttpResponse("{}", 201)}] as HeadersHttpClient
         assert service.invoke("unitTest")

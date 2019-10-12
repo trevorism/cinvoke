@@ -10,6 +10,7 @@ interface JenkinsService {
 
     List<JenkinsJob> list()
     JenkinsJob get(String jobName)
+    boolean update(String jobName, List<String> tasks)
     boolean delete(String jobName)
     boolean create(CreateJenkinsJob job)
     boolean invoke(String jobName)
