@@ -16,4 +16,6 @@ class CreateJenkinsJob {
     @ApiModelProperty(value = "The gradle tasks to run", example = '["clean","build","publishSnapshot"]')
     List<String> gradleTasks
 
+    @ApiModelProperty(value = "Create a job with no build trigger", dataType = "boolean")
+    boolean noBuildTrigger
 }

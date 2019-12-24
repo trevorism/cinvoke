@@ -128,15 +128,20 @@ class DefaultJenkinsService implements JenkinsService {
 
     }
 
-    private String updateXmlTemplate(CreateJenkinsJob job) {
+    private static String updateXmlTemplate(CreateJenkinsJob job) {
         def xml = new XmlSlurper().parse(DefaultJenkinsService.class.getClassLoader().getResourceAsStream("jenkinsConfigTemplate.xml"))
         xml.scm.userRemoteConfigs.'hudson.plugins.git.UserRemoteConfig'.url.replaceBody "https://github.com/trevorism/${job.gitRepoName}.git"
         xml.builders.'hudson.plugins.gradle.Gradle'.tasks.replaceBody job.gradleTasks.join(" ")
+        if(job.noBuildTrigger){
+            xml.triggers.replaceNode {
+                triggers {}
+            }
+        }
         String updatedXml = XmlUtil.serialize(xml)
         updatedXml
     }
 
-    private CreateJenkinsJob validateJob(CreateJenkinsJob job) {
+    private static CreateJenkinsJob validateJob(CreateJenkinsJob job) {
         if(!job.name)
             throw new RuntimeException("Unable to create job with no name")
         if (!job.gitRepoName)

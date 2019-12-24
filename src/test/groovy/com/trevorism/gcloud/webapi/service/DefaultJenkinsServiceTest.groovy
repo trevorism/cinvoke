@@ -72,4 +72,22 @@ class DefaultJenkinsServiceTest {
         CloseableHttpResponse response = [getEntity:{ -> entity}, getStatusLine: getStatusLineClosure] as CloseableHttpResponse
         return response
     }
+
+    @Test
+    void testUpdateXmlTemplate(){
+        CreateJenkinsJob cjj = new CreateJenkinsJob(name: "unit", gitRepoName: "testGit", gradleTasks: ["test1", "test2"])
+        def result = DefaultJenkinsService.updateXmlTemplate(cjj)
+        assert result.contains("<url>https://github.com/trevorism/testGit.git</url>")
+        assert result.contains("<tasks>test1 test2</tasks>")
+        assert !result.contains("<triggers/>")
+    }
+
+    @Test
+    void testUpdateXmlTemplateNoTrigger(){
+        CreateJenkinsJob cjj = new CreateJenkinsJob(name: "test2", gitRepoName: "testGit2", gradleTasks: ["test3", "test2"], noBuildTrigger: true)
+        def result = DefaultJenkinsService.updateXmlTemplate(cjj)
+        assert result.contains("<url>https://github.com/trevorism/testGit2.git</url>")
+        assert result.contains("<tasks>test3 test2</tasks>")
+        assert result.contains("<triggers/>")
+    }
 }
