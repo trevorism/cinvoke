@@ -33,7 +33,7 @@
     <builders>
         <hudson.plugins.gradle.Gradle plugin="gradle@1.34">
             <switches/>
-            <tasks>clean build publishSnapshot deliver</tasks>
+            <tasks>clean build deliver</tasks>
             <rootBuildScriptDir/>
             <buildFile/>
             <gradleName>(Default)</gradleName>
