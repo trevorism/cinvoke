@@ -2,10 +2,8 @@ package com.trevorism.gcloud
 
 import com.trevorism.gcloud.webapi.model.CreateJenkinsJob
 import com.trevorism.gcloud.webapi.model.JenkinsJob
-import com.trevorism.http.headers.HeadersHttpClient
-import com.trevorism.http.headers.HeadersJsonHttpClient
-import com.trevorism.http.util.ResponseUtils
-import com.trevorism.secure.PasswordProvider
+import com.trevorism.https.DefaultSecureHttpClient
+import com.trevorism.https.SecureHttpClient
 import gherkin.deps.com.google.gson.Gson
 import gherkin.deps.com.google.gson.GsonBuilder
 import gherkin.deps.com.google.gson.reflect.TypeToken
@@ -15,33 +13,32 @@ import gherkin.deps.com.google.gson.reflect.TypeToken
  */
 class JenkinsTestClient {
 
-    HeadersHttpClient client = new HeadersJsonHttpClient()
+    SecureHttpClient client = new DefaultSecureHttpClient()
     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create()
-    PasswordProvider passwordProvider = new PasswordProvider()
 
     boolean delete(String jobName){
-        String responseJson = ResponseUtils.getEntity client.delete("http://cinvoke.datastore.trevorism.com/job/$jobName", ["Authorization":passwordProvider.password])
+        String responseJson = client.delete("http://cinvoke.datastore.trevorism.com/job/$jobName")
         return Boolean.valueOf(responseJson)
     }
 
     boolean create(CreateJenkinsJob jenkinsJob){
         String json = gson.toJson(jenkinsJob)
-        String responseJson = ResponseUtils.getEntity client.post("http://cinvoke.datastore.trevorism.com/job", json, ["Authorization":passwordProvider.password])
+        String responseJson = client.post("http://cinvoke.datastore.trevorism.com/job", json)
         return Boolean.valueOf(responseJson)
     }
 
     boolean invoke(String jobName){
-        String responseJson = ResponseUtils.getEntity client.post("http://cinvoke.datastore.trevorism.com/job/$jobName/build", "{}", ["Authorization":passwordProvider.password])
+        String responseJson = client.post("http://cinvoke.datastore.trevorism.com/job/$jobName/build", "{}")
         return Boolean.valueOf(responseJson)
     }
 
     List<JenkinsJob> list(){
-        String responseJson = ResponseUtils.getEntity client.get("http://cinvoke.datastore.trevorism.com/job", ["Authorization":passwordProvider.password])
+        String responseJson = client.get("http://cinvoke.datastore.trevorism.com/job")
         return gson.fromJson(responseJson, new TypeToken<List<JenkinsJob>>(){}.getType())
     }
 
     JenkinsJob get(String jobName){
-        String responseJson = ResponseUtils.getEntity client.get("http://cinvoke.datastore.trevorism.com/job/$jobName", ["Authorization":passwordProvider.password])
+        String responseJson = client.get("http://cinvoke.datastore.trevorism.com/job/$jobName")
         return gson.fromJson(responseJson, JenkinsJob)
     }
 

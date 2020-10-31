@@ -7,18 +7,12 @@ import com.trevorism.gcloud.webapi.model.JenkinsJob
 import com.trevorism.gcloud.webapi.service.DefaultJenkinsService
 import com.trevorism.gcloud.webapi.service.JenkinsService
 import com.trevorism.http.headers.HeadersHttpClient
+import com.trevorism.secure.Roles
 import com.trevorism.secure.Secure
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 
-import javax.ws.rs.Consumes
-import javax.ws.rs.DELETE
-import javax.ws.rs.GET
-import javax.ws.rs.POST
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
+import javax.ws.rs.*
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.MediaType
@@ -35,7 +29,7 @@ class JenkinsController {
 
     @ApiOperation(value = "Create a new jenkins job **Secure")
     @POST
-    @Secure
+    @Secure(Roles.SYSTEM)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     boolean createJob(@Context HttpHeaders headers, CreateJenkinsJob job){
@@ -47,7 +41,7 @@ class JenkinsController {
 
     @ApiOperation(value = "Updates a jenkins job **Secure")
     @PUT
-    @Secure
+    @Secure(Roles.SYSTEM)
     @Path("{job}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -66,9 +60,10 @@ class JenkinsController {
         jenkinsService.list()
     }
 
-    @ApiOperation(value = "Get a specific job")
+    @ApiOperation(value = "Get a specific job **Secure")
     @GET
     @Path("{job}")
+    @Secure(Roles.USER)
     @Produces(MediaType.APPLICATION_JSON)
     JenkinsJob getJob(@PathParam("job") String jobName){
         new JenkinsJob(name: jenkinsService.get(jobName))
@@ -76,7 +71,7 @@ class JenkinsController {
 
     @ApiOperation(value = "Delete a job **Secure")
     @DELETE
-    @Secure
+    @Secure(Roles.SYSTEM)
     @Path("{job}")
     @Consumes(MediaType.APPLICATION_JSON)
     boolean deleteJob(@Context HttpHeaders headers, @PathParam("job") String jobName){
@@ -88,7 +83,7 @@ class JenkinsController {
 
     @ApiOperation(value = "Invoke a job **Secure")
     @POST
-    @Secure
+    @Secure(Roles.SYSTEM)
     @Path("{job}/build")
     @Produces(MediaType.APPLICATION_JSON)
     boolean invokeJob(@Context HttpHeaders headers, @PathParam("job") String jobName){

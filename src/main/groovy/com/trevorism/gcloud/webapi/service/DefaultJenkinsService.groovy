@@ -9,6 +9,7 @@ import com.trevorism.http.headers.HeadersHttpClient
 import com.trevorism.http.headers.HeadersHttpClientBase
 import com.trevorism.http.headers.HeadersJsonHttpClient
 import com.trevorism.http.util.ResponseUtils
+import com.trevorism.secure.PropertiesProvider
 import groovy.xml.XmlUtil
 import org.apache.http.client.methods.CloseableHttpResponse
 
@@ -21,15 +22,13 @@ class DefaultJenkinsService implements JenkinsService {
     private HeadersHttpClientBase xmlClient = createTextXmlHttpClient()
 
     private final Gson gson = new Gson()
-    private final Properties properties
     private String jenkinsUrl
     private String username
     private String password
 
 
     DefaultJenkinsService() {
-        properties = new Properties()
-        properties.load(DefaultJenkinsService.class.getClassLoader().getResourceAsStream("secrets.properties") as InputStream)
+        PropertiesProvider properties = new PropertiesProvider()
 
         jenkinsUrl = properties.getProperty("url")
         username = properties.getProperty("username")
@@ -60,7 +59,7 @@ class DefaultJenkinsService implements JenkinsService {
         return xmlPost(createJenkinsJob, "${jenkinsUrl}/job/${jobName}/config.xml")
     }
 
-    private CreateJenkinsJob createUpdateObject(String jobName, List<String> tasks) {
+    private static CreateJenkinsJob createUpdateObject(String jobName, List<String> tasks) {
         CreateJenkinsJob createJenkinsJob = new CreateJenkinsJob()
         createJenkinsJob.name = jobName
         createJenkinsJob.gitRepoName = jobName
@@ -90,7 +89,7 @@ class DefaultJenkinsService implements JenkinsService {
         return statusCode == 200
     }
 
-    private HeadersHttpClientBase createTextXmlHttpClient() {
+    private static HeadersHttpClientBase createTextXmlHttpClient() {
         HeadersHttpClient client = new HeadersHttpClientBase() {
             @Override
             protected String getMediaType() {
@@ -114,8 +113,8 @@ class DefaultJenkinsService implements JenkinsService {
         return gson.fromJson(crumbJson, Crumb)
     }
 
-    private Map createHeaders(Crumb crumb = null) {
-        Map headers = [:]
+    private Map<String,String> createHeaders(Crumb crumb = null) {
+        Map<String,String> headers = [:]
         headers.put("Authorization", getBasicAuthenticationValue())
         if (crumb)
             headers.put(crumb.crumbRequestField, crumb.crumb)
