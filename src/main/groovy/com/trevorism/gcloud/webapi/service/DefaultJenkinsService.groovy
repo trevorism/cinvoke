@@ -13,16 +13,20 @@ import com.trevorism.secure.PropertiesProvider
 import groovy.xml.XmlUtil
 import org.apache.http.client.methods.CloseableHttpResponse
 
+import java.util.logging.Logger
+
 /**
  * @author tbrooks
  */
 class DefaultJenkinsService implements JenkinsService {
 
+    private static final Logger log = Logger.getLogger(DefaultJenkinsService.class.name)
+
     private HeadersHttpClient client = new HeadersJsonHttpClient()
     private HeadersHttpClientBase xmlClient = createTextXmlHttpClient()
 
     private final Gson gson = new Gson()
-    private String jenkinsUrl
+    private static final String jenkinsUrl = "https://trevorism-build.eastus.cloudapp.azure.com"
     private String username
     private String password
 
@@ -30,7 +34,6 @@ class DefaultJenkinsService implements JenkinsService {
     DefaultJenkinsService() {
         PropertiesProvider properties = new PropertiesProvider()
 
-        jenkinsUrl = properties.getProperty("url")
         username = properties.getProperty("username")
         password = properties.getProperty("password")
     }
@@ -101,6 +104,7 @@ class DefaultJenkinsService implements JenkinsService {
 
     @Override
     boolean invoke(String jobName) {
+        log.info("Invoking job $jobName")
         CloseableHttpResponse response = client.post("${jenkinsUrl}/job/${jobName}/build", "{}", createHeaders(crumb))
         int statusCode = response.statusLine.statusCode
         ResponseUtils.closeSilently response

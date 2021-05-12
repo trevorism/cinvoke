@@ -7,7 +7,7 @@
 
 A webapp that wraps the jenkins API.
 
-Current version: 0.3.0
+Current version: 0.4.0
 
 Deployed to [Cinvoke](http://cinvoke.datastore.trevorism.com)
 
