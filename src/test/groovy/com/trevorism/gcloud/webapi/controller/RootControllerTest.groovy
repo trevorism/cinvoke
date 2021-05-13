@@ -1,5 +1,6 @@
 package com.trevorism.gcloud.webapi.controller
 
+
 import org.junit.Test
 
 /**
@@ -18,4 +19,5 @@ class RootControllerTest {
         RootController rootController = new RootController()
         assert rootController.ping() == "pong"
     }
+
 }

@@ -86,7 +86,8 @@ class JenkinsController {
     @Secure(Roles.SYSTEM)
     @Path("{job}/build")
     @Produces(MediaType.APPLICATION_JSON)
-    boolean invokeJob(@Context HttpHeaders headers, @PathParam("job") String jobName){
+    @Consumes(MediaType.APPLICATION_JSON)
+    boolean invokeJob(@Context HttpHeaders headers, @PathParam("job") String jobName, Map data){
         boolean result = jenkinsService.invoke(jobName)
         String correlationId = headers?.getHeaderString(HeadersHttpClient.CORRELATION_ID_HEADER_KEY)
         eventProducer.sendEvent(new WorkComplete("trevorism-gcloud", "cinvoke", correlationId))
