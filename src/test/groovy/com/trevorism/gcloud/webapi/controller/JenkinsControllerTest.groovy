@@ -41,6 +41,6 @@ class JenkinsControllerTest {
 
     @Test
     void testInvokeJob() {
-        assert jenkinsController.invokeJob(null, "unitTest")
+        assert jenkinsController.invokeJob(null, "unitTest", [:])
     }
 }
