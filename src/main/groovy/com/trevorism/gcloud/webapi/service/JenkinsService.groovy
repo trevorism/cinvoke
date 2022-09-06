@@ -8,6 +8,8 @@ import com.trevorism.gcloud.webapi.model.JenkinsJob
  */
 interface JenkinsService {
 
+    public static final String JENKINS_URL = "https://trevorism-build.eastus.cloudapp.azure.com"
+
     List<JenkinsJob> list()
     JenkinsJob get(String jobName)
     boolean update(String jobName, List<String> tasks)

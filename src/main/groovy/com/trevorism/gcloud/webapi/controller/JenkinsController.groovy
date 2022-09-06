@@ -52,7 +52,6 @@ class JenkinsController {
         return result
     }
 
-
     @ApiOperation(value = "Get a list of all jenkins jobs")
     @GET
     @Produces(MediaType.APPLICATION_JSON)

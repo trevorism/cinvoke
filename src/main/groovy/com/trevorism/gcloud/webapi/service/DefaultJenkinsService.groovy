@@ -26,10 +26,8 @@ class DefaultJenkinsService implements JenkinsService {
     private HeadersHttpClientBase xmlClient = createTextXmlHttpClient()
 
     private final Gson gson = new Gson()
-    private static final String jenkinsUrl = "https://trevorism-build.eastus.cloudapp.azure.com"
     private String username
     private String password
-
 
     DefaultJenkinsService() {
         PropertiesProvider properties = new PropertiesProvider()
@@ -40,7 +38,7 @@ class DefaultJenkinsService implements JenkinsService {
 
     @Override
     List<JenkinsJob> list() {
-        CloseableHttpResponse response = client.get("${jenkinsUrl}/api/json?depth=1", [:])
+        CloseableHttpResponse response = client.get("${JenkinsService.JENKINS_URL}/api/json?depth=1", [:])
         String jobsJson = ResponseUtils.getEntity response
         JobsList list = gson.fromJson(jobsJson, JobsList)
         return list.jobs
@@ -48,7 +46,7 @@ class DefaultJenkinsService implements JenkinsService {
 
     @Override
     JenkinsJob get(String jobName) {
-        CloseableHttpResponse response = client.get("${jenkinsUrl}/job/${jobName}", [:])
+        CloseableHttpResponse response = client.get("${JenkinsService.JENKINS_URL}/job/${jobName}", [:])
         int statusCode = response.statusLine.statusCode
         ResponseUtils.closeSilently response
         if (statusCode != 404)
@@ -59,7 +57,7 @@ class DefaultJenkinsService implements JenkinsService {
     @Override
     boolean update(String jobName, List<String> tasks) {
         CreateJenkinsJob createJenkinsJob = createUpdateObject(jobName, tasks)
-        return xmlPost(createJenkinsJob, "${jenkinsUrl}/job/${jobName}/config.xml")
+        return xmlPost(createJenkinsJob, "${JenkinsService.JENKINS_URL}/job/${jobName}/config.xml")
     }
 
     private static CreateJenkinsJob createUpdateObject(String jobName, List<String> tasks) {
@@ -72,7 +70,7 @@ class DefaultJenkinsService implements JenkinsService {
 
     @Override
     boolean delete(String jobName) {
-        CloseableHttpResponse response = client.post("${jenkinsUrl}/job/${jobName}/doDelete", "{}", createHeaders(crumb))
+        CloseableHttpResponse response = client.post("${JenkinsService.JENKINS_URL}/job/${jobName}/doDelete", "{}", createHeaders(crumb))
         int statusCode = response.statusLine.statusCode
         ResponseUtils.closeSilently response
         return statusCode != 404
@@ -80,7 +78,7 @@ class DefaultJenkinsService implements JenkinsService {
 
     @Override
     boolean create(CreateJenkinsJob job) {
-        xmlPost(job, "${jenkinsUrl}/createItem?name=${job.name}")
+        xmlPost(job, "${JenkinsService.JENKINS_URL}/createItem?name=${job.name}")
     }
 
     private boolean xmlPost(CreateJenkinsJob job, String url){
@@ -105,14 +103,14 @@ class DefaultJenkinsService implements JenkinsService {
     @Override
     boolean invoke(String jobName) {
         log.info("Invoking job $jobName")
-        CloseableHttpResponse response = client.post("${jenkinsUrl}/job/${jobName}/build", "{}", createHeaders(crumb))
+        CloseableHttpResponse response = client.post("${JenkinsService.JENKINS_URL}/job/${jobName}/build", "{}", createHeaders(crumb))
         int statusCode = response.statusLine.statusCode
         ResponseUtils.closeSilently response
         return statusCode == 201
     }
 
     private Crumb getCrumb() {
-        CloseableHttpResponse response = client.get("${jenkinsUrl}/crumbIssuer/api/json", createHeaders())
+        CloseableHttpResponse response = client.get("${JenkinsService.JENKINS_URL}/crumbIssuer/api/json", createHeaders())
         String crumbJson = ResponseUtils.getEntity response
         return gson.fromJson(crumbJson, Crumb)
     }
@@ -128,7 +126,6 @@ class DefaultJenkinsService implements JenkinsService {
     private String getBasicAuthenticationValue() {
         String encoded = "$username:$password".bytes.encodeBase64().toString()
         return "Basic ${encoded}"
-
     }
 
     private static String updateXmlTemplate(CreateJenkinsJob job) {
